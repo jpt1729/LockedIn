@@ -83,12 +83,3 @@ model Authenticator {
 
   @@id([userId, credentialID])
 }
-
-model Room {
-  ip String @unique
-}
-
-model Clients {
-  id   String @unique
-  // account Account
-}
