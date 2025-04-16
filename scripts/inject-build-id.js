@@ -1,7 +1,9 @@
 // scripts/inject-build-id.js
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const { execSync } = require('child_process');
 
-const buildId = fs.readFileSync(path.join(__dirname, "../.next/BUILD_ID"), "utf8");
-fs.writeFileSync(".env.local", `NEXT_PUBLIC_BUILD_ID=${buildId}`);
-console.log("Build ID injected:", buildId);
+const gitHash = execSync('git rev-parse --short HEAD').toString().trim();
+
+fs.writeFileSync('.env.local', `NEXT_PUBLIC_BUILD_ID=${gitHash}\n`);
+
+console.log('✅ Build ID written to .env.local:', gitHash);
