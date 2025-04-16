@@ -15,7 +15,7 @@ export default function Footer({}) {
         <span>Copyright {new Date().getFullYear()} John Tan-Aristy</span>
       </div>
       <div>
-        <span className="text-gray">Build: {process.env.NEXT_PUBLIC_BUILD_ID || 'ea5d6f092b9b23abb6b4fa1503ac4d03ae7ccd72'}</span>
+        <span className="text-gray">Build: {process.env.NEXT_PUBLIC_BUILD_ID}</span>
       </div>
     </footer>
   );
