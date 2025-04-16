@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build && node scripts/inject-build-id.js",
+    "build": "GIT_HASH=$(git rev-parse --short HEAD) prisma generate && next build && node scripts/inject-build-id.js",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate"
