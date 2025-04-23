@@ -1,17 +1,20 @@
-"use client"
-import { signIn, signOut, useSession } from "next-auth/react"
-
-export default function AuthButton() {
-  const { data: session } = useSession()
-
-  if (session) {
+import { auth, signIn } from "@/app/auth";
+export default async function AuthButton() {
+  const session = await auth();
+  if (!session?.user)
     return (
-      <>
-        <p>Welcome, {session.user.name}</p>
-        <button onClick={() => signOut()}>Sign out</button>
-      </>
-    )
-  }
-
-  return <button onClick={() => signIn("google")}>Sign in with Google</button>
+      <form
+        action={async () => {
+          "use server";
+          await signIn("google");
+        }}
+      >
+        <button type="submit">Signin with Google</button>
+      </form>
+    );
+  return (
+    <div>
+      <span>Welcome, {session.user?.name}</span>
+    </div>
+  )
 }
