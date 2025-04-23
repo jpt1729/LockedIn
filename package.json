@@ -4,14 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "GIT_HASH=$(git rev-parse HEAD); export GIT_HASH; prisma generate && next build && node inject-build-id.js",
+    "build": "GIT_HASH=$(git rev-parse HEAD); export GIT_HASH; prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@auth/prisma-adapter": "^2.8.0",
+    "@auth/prisma-adapter": "^2.9.0",
     "@prisma/client": "^6.6.0",
+    "nanoid": "^5.1.5",
     "next": "15.3.0",
     "next-auth": "^5.0.0-beta.25",
     "react": "^19.0.0",

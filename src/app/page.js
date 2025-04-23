@@ -1,6 +1,10 @@
 import Heading from "@/components/styled_components/heading";
 import Footer from "@/components/footer";
 
+import AuthButton from "@/components/auth/button";
+
+import UserTable from "@/components/user_table";
+
 export default function Home() {
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-mono)]">
@@ -17,7 +21,11 @@ export default function Home() {
           per conubia nostra inceptos himenaeos.
         </p>
       </div>
+      <div className="w-full">
+        <UserTable/>
+      </div>
       <Footer />
+      <AuthButton/>
     </div>
   );
 }

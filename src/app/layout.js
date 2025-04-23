@@ -1,3 +1,6 @@
+import Providers from "./providers";
+import { NotificationsProvider } from "@/components/notifications/notifications_provider";
+
 import { Geist, Geist_Mono, Crimson_Text } from "next/font/google";
 import "./globals.css";
 
@@ -14,7 +17,7 @@ const geistMono = Geist_Mono({
 const crimsonText = Crimson_Text({
   variable: "--font-crimson-text",
   subsets: ["latin"],
-  weight: ["400", "700"]
+  weight: ["400", "700"],
 });
 
 export const metadata = {
@@ -28,7 +31,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${crimsonText.variable} antialiased bg-off-white`}
       >
-        {children}
+        <Providers>
+          <NotificationsProvider>{children}</NotificationsProvider>
+        </Providers>
       </body>
     </html>
   );
