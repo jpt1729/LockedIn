@@ -2,7 +2,7 @@ import { auth } from "@/app/auth"
 import { NextResponse } from "next/server"
  
 export const POST = auth(function POST(req) {
-  const forwarded = req.headers['x-forwarded-for']
+  const forwarded = req.headers
   console.log(forwarded)
   console.log(req.auth)
   if (req.auth) return NextResponse.json(req.auth)
@@ -10,8 +10,7 @@ export const POST = auth(function POST(req) {
 })
 
 export const GET = auth(function GET(req) {
-  const forwarded = req.headers['x-forwarded-for']
-  
+  const forwarded = req.headers
   console.log(forwarded)
   console.log(req.auth)
   if (req.auth) return NextResponse.json(req.auth)
