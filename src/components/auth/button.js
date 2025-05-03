@@ -1,4 +1,5 @@
-import { auth, signIn } from "@/app/auth";
+import { auth, signIn } from "@/utils/auth";
+
 export default async function AuthButton() {
   const session = await auth();
   if (!session?.user)
@@ -15,6 +16,7 @@ export default async function AuthButton() {
   return (
     <div>
       <span>Welcome, {session.user?.name}</span>
+      <span></span>
     </div>
   )
 }

@@ -1,5 +1,5 @@
-import Providers from "./providers";
-import { NotificationsProvider } from "@/components/notifications/notifications_provider";
+import {AppProviders} from "@/components/providers";
+
 
 import { Geist, Geist_Mono, Crimson_Text } from "next/font/google";
 import "./globals.css";
@@ -31,9 +31,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${crimsonText.variable} antialiased bg-off-white`}
       >
-        <Providers>
-          <NotificationsProvider>{children}</NotificationsProvider>
-        </Providers>
+        <AppProviders>
+          {children}
+        </AppProviders>
       </body>
     </html>
   );

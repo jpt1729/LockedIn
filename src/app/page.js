@@ -3,6 +3,7 @@ import Footer from "@/components/footer";
 
 import AuthButton from "@/components/auth/button";
 
+import ConnectStatusChip from "@/components/user_table/connect_status_chip";
 import UserTable from "@/components/user_table";
 
 export default function Home() {
@@ -25,7 +26,8 @@ export default function Home() {
         <UserTable/>
       </div>
       <Footer />
-      <AuthButton/>
+      <div className="flex gap-1"><AuthButton/><ConnectStatusChip/></div>
+      
     </div>
   );
 }

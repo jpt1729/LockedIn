@@ -95,10 +95,10 @@ model Room {
 }
 
 model Client {
-  id String @unique
+  socketId String
 
-  roomId String?
-  room   Room?   @relation(fields: [roomId], references: [id])
+  roomId String
+  room   Room   @relation(fields: [roomId], references: [id])
 
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -107,10 +107,12 @@ model Client {
   image       String?
   role        String?
   linkedInURL String?
-  email       String?
+  //email       String?
 
   active Boolean
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique(name: "clientId", fields: [roomId, userId])
 }

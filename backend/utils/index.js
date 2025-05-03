@@ -1,0 +1,18 @@
+import os from "os";
+
+// Get local network IP
+function getLocalIP() {
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    for (const net of interfaces[name]) {
+      if (net.family === "IPv4" && !net.internal) {
+        return net.address;
+      }
+    }
+  }
+  return "localhost";
+}
+function timestamp() {
+  return new Date().toLocaleString();
+}
+export { getLocalIP, timestamp };
