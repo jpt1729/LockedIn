@@ -1,4 +1,4 @@
-import { auth, signIn } from "@/utils/auth";
+import { auth, signIn, signOut } from "@/utils/auth";
 
 export default async function AuthButton() {
   const session = await auth();
@@ -16,7 +16,14 @@ export default async function AuthButton() {
   return (
     <div>
       <span>Welcome, {session.user?.name}</span>
-      <span></span>
+      <span
+        onClick={async () => {
+          "use server";
+          await signOut();
+        }}
+      >
+        Log out
+      </span>
     </div>
-  )
+  );
 }

@@ -20,15 +20,13 @@ io.on("connection", (socket) => {
     console.log(`[${timestamp()}] ${socket.id} joined room ${roomId}`);
     console.log({socketId: socket.id, ...user})
     // Optionally send an acknowledgment or sync state
-    socket.to(roomId).emit("user-joined", { roomId, user: {socketId: socket.id, ...user} });
+    socket.to(roomId).emit("user_joined", { roomId, user: {socketId: socket.id, ...user} });
+    console.log(`[${timestamp()}] Emitted user joined room to ${roomId}`)
   });
 
   socket.on("message", ({ roomId, message }) => {
     // Emit to everyone in the room except sender
-    socket.to(roomId).emit("message", {
-      from: socket.id,
-      content: message,
-    });
+    socket.to(roomId).emit("message", message);
     console.log(`[${timestamp()}] ${socket.id} message in ${roomId}: ${message}`)
   });
 

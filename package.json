@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"next dev\" \"nodemon backend/index.js\"",
+    "frontend-dev": "next dev",
     "build": "GIT_HASH=$(git rev-parse HEAD); export GIT_HASH; prisma generate && next build",
-    "backend": "ts-node-dev --respawn --transpile-only backend/index.js",
+    "backend": "nodemon backend/index.js",
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate"
