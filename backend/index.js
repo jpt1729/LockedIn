@@ -25,10 +25,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on("message", ({ roomId, message }) => {
-    // Emit to everyone in the room except sender
-    socket.to(roomId).emit("message", message);
     console.log(`[${timestamp()}] ${socket.id} message in ${roomId}: ${message}`)
-  });
+    // Temporarily use io.in to send to *all* including sender
+    io.in(roomId).emit("message", message);
+    console.log(`[${timestamp()}] Broadcast message to room ${roomId}`) // Add log
+});
 
   socket.on("update-user", ({ roomId, user }) => {
     // Emit to everyone in the room except sender
