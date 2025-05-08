@@ -107,12 +107,12 @@ model Client {
   image       String?
   role        String?
   linkedInURL String?
-  //email       String?
+  email       String?
 
   active Boolean
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique(name: "clientId", fields: [roomId, userId])
+  @@unique([roomId, userId])
 }

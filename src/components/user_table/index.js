@@ -13,14 +13,14 @@ export default function UserTable({}) {
 
   useEffect(() => {
     if (!socket) return
-    joinRoom(); // or use dynamic room ID from params
+    joinRoom('room123'); // or use dynamic room ID from params
   }, [socket, joinRoom]);
 
   return (
     <>
       <button
         onClick={() => {
-          sendMessage();
+          sendMessage('room123', 'Hi hi!');
         }}
         className="cursor-pointer p-4 bg-amber-300"
       >hi</button>
