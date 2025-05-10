@@ -18,8 +18,8 @@ export function registerRoomHandlers(io, socket) {
             image: socket.user.image
         };
         // Emit to others in the room
-        socket.to(roomId).emit("user_joined", { roomId, user: userInfoForRoom });
-        console.log(`[${timestamp()}] Emitted user_joined to room ${roomId}`);
+        socket.to(roomId).emit("user-joined", { roomId, user: userInfoForRoom });
+        console.log(`[${timestamp()}] Emitted user-joined to room ${roomId}`);
     });
 
     // Add other room-related handlers here, e.g., "leave-room"

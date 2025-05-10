@@ -5,44 +5,83 @@ import {
   useContext,
   useEffect,
   useState,
-  useCallback, 
-  useRef // Add useRef
+  useCallback,
+  useRef,
 } from "react";
-import { io } from 'socket.io-client';
-import { useSession } from "next-auth/react";
+
+import { useSocket } from "./socket";
 
 const UserTableContext = createContext();
 
+const addUser = (userTableData, newUser) => {
+  const { id, image, name, socketId } = newUser;
+  if (!id || !name || !socketId) {
+    // error
+    return;
+  }
+  if (userTableData.some(user => user.id === id)) {
+    // ensures new user
+    return;
+  }
+  return [...userTableData, {...newUser, role: "", email: "", active: true, time_connected: new Date()}]
+};
+
 export function UserTableProvider({ children }) {
-    
-  const { data: session } = useSession();
-  const socketRef = useRef(null); 
-  const [isConnected, setIsConnected] = useState(false);
-  const [room, setRoom] = useState(null);
+  const [userTableData, setUserTableData] = useState([
+    {
+      id: "aaaaaa",
+      name: "John Pork",
+      role: "Intern @ Raytheon",
+      email: "johnny.pork@raytheon.com",
+      active: true,
+      time_connected: new Date(2025, 4, 9, 12, 0, 0),
+    },
+  ]);
+  const { socket, connected } = useSocket();
 
-  
-  // --- Socket Action Callbacks (use socketRef.current) ---
-  const joinRoom = useCallback((roomId) => {
-    if (socketRef.current?.connected) {
-      socketRef.current.emit("join-room", { roomId });
-    } else {
-      console.warn("Socket not connected, cannot join room.");
+  useEffect(() => {
+    if (!connected) {
+      return;
     }
-  }, []); // Depends only on socketRef which is stable
+    socket.on("message", (data) => {
+      console.log("New message!");
+      console.log(data);
+    });
+    socket.on("user-joined", (data) => {
+      console.log("user joined room!");
+      console.log(data);
+      setUserTableData(addUser(userTableData, data.user))
+    });
+  }, [connected, socket]);
 
-  const sendMessage = useCallback((roomId, message) => {
-    if (socketRef.current?.connected) {
-      socketRef.current.emit("message", { roomId, message });
-    } else {
-      console.warn("Socket not connected, cannot send message.");
-    }
-  }, []);
+  const joinRoom = useCallback(
+    (roomId) => {
+      if (!connected) {
+        console.warn("Socket not connected, cannot join room.");
+        return;
+      }
 
+      socket.emit("join-room", { roomId });
+    },
+    [socket, connected]
+  ); // Depends only on socketRef which is stable
+
+  const sendMessage = useCallback(
+    (roomId, message) => {
+      if (!connected) {
+        console.warn("Socket not connected, cannot send message.");
+        return;
+      }
+
+      socket.emit("message", { roomId, message });
+    },
+    [socket, connected]
+  );
 
   return (
     <UserTableContext.Provider
       // Pass down the stable ref value and connection status
-      value={{ socket: socketRef.current, isConnected, joinRoom, sendMessage, room }}
+      value={{ joinRoom, sendMessage, userTableData, connected }}
     >
       {children}
     </UserTableContext.Provider>

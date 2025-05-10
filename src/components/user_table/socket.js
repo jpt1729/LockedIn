@@ -105,8 +105,8 @@ export function SocketProvider({ children }) {
           setIsConnected(false);
       }
     };
-  // Re-run when session status changes, or if session object itself changes (e.g., user logs in/out)
-  }, [session, status]);
+  // Re-run when session status changes
+  }, [status]);
 
   return (
     <SocketContext.Provider value={{ socket: socketInstance, connected: isConnected }}>

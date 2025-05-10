@@ -2,28 +2,31 @@
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 
+import { useSocket } from "./socket";
 import { useUserTable } from "./user_table_provider";
 import { UserRow } from "./user_row";
 
-
 export default function UserTable({}) {
-  const { data: session } = useSession()
-  console.log(session)
-  const { socket, joinRoom, sendMessage, roomId } = useUserTable();
+  const { data: session } = useSession();
+
+  const { connected, joinRoom, sendMessage, userTableData } = useUserTable();
 
   useEffect(() => {
-    if (!socket) return
-    joinRoom('room123'); // or use dynamic room ID from params
-  }, [socket, joinRoom]);
+    if (connected) {
+      joinRoom("room123"); // or use dynamic room ID from params
+    }
+  }, [joinRoom, connected]);
 
   return (
     <>
       <button
         onClick={() => {
-          sendMessage('room123', 'Hi hi!');
+          sendMessage("room123", "Hi hi!");
         }}
         className="cursor-pointer p-4 bg-amber-300"
-      >hi</button>
+      >
+        hi
+      </button>
       <table className="w-full">
         <thead>
           <tr>
@@ -38,13 +41,15 @@ export default function UserTable({}) {
           </tr>
         </thead>
         <tbody>
-          <UserRow
-            name={"John Pork"}
-            role={"Student @ Raytheon"}
-            email={"john.pork@gmail.com"}
-            active={true}
-            time_connected={new Date()}
-          />
+          {userTableData &&
+            userTableData.map((data) => {
+              return (
+                <UserRow
+                  key={data.id}
+                  {...data}
+                />
+              );
+            })}
         </tbody>
       </table>
     </>
