@@ -7,8 +7,8 @@ import { UserRow } from "./user_row";
 
 
 export default function UserTable({}) {
-  const { data: session, status } = useSession()
-
+  const { data: session } = useSession()
+  console.log(session)
   const { socket, joinRoom, sendMessage, roomId } = useUserTable();
 
   useEffect(() => {

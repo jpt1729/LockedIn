@@ -1,11 +1,11 @@
 "use client"
-import { useUserTable } from "./user_table_provider"
+import { useSocket } from "./socket";
 
 export default function ConnectStatusChip({}) {
-    const { isConnected } = useUserTable();
+    const { connected } = useSocket();
     return (
         <div className="flex gap-1 items-center">
-            <div className={`w-4 h-4 rounded-full ${isConnected ? 'bg-success-green': 'bg-failure-red'}`}/><span>{isConnected ? " Connected" : " Disconnected"}</span>
+            <div className={`w-4 h-4 rounded-full ${connected ? 'bg-success-green': 'bg-failure-red'}`}/><span>{connected ? " Connected" : " Disconnected"}</span>
         </div>
     )
 }
