@@ -22,6 +22,7 @@ export function authenticateSocket(socket, next) {
             name: decoded.name,
             email: decoded.email,
             image: decoded.image,
+            ...decoded
             // Add other fields as needed from your JWT payload
         };
 
