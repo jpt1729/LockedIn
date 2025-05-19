@@ -36,6 +36,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return true; 
     },
+    async session({ session, token }) {
+      if (token?.sub) { // or token?.id if your user ID is stored in token.id
+        session.user = {
+          ...session.user,
+
+        };
+      }
+      return {...session, sessionToken: undefined,};
+    },
   },
   secret: JWT_SECRET, 
 });

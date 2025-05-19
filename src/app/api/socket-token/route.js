@@ -7,7 +7,6 @@ const JWT_SECRET = process.env.AUTH_SECRET;
 
 if (!JWT_SECRET) {
   console.error("FATAL: AUTH_SECRET not configured for socket token generation.");
-  // Consider how to handle this critical error, perhaps by preventing server startup
 }
 
 export const GET = auth(async function GET(req) {

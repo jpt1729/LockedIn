@@ -1,14 +1,9 @@
 "use client";
-import { useEffect } from "react";
-import { useSession } from "next-auth/react";
-
 import { useUserTable } from "./user_table_provider";
 import { UserRow } from "./user_row";
 
 export default function UserTable({}) {
-  const { data: session } = useSession();
-
-  const { connected, joinRoom, sendMessage, userTableData } = useUserTable();
+  const { userTableData, addUser } = useUserTable();
 
   return (
     <>
@@ -28,12 +23,7 @@ export default function UserTable({}) {
         <tbody>
           {userTableData &&
             userTableData.map((data) => {
-              return (
-                <UserRow
-                  key={data.id}
-                  {...data}
-                />
-              );
+              return <UserRow key={data.id} {...data} />;
             })}
         </tbody>
       </table>
