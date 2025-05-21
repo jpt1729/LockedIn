@@ -1,4 +1,4 @@
-import { registerRoomHandlers, joinRoom } from "./room_handler.js";
+import { joinRoom } from "./room_handler.js";
 import { registerMessageHandlers } from "./message_handler.js";
 import { registerUserUpdateHandlers } from "./user_update_handler.js";
 import { registerDisconnectHandler } from "./disconnect_handler.js";
@@ -12,7 +12,6 @@ export async function onConnection(io, socket) {
     }, User ID: ${socket.user.id}`
   );
   joinRoom(io, socket)
-  registerRoomHandlers(io, socket);
   registerMessageHandlers(io, socket);
   registerUserUpdateHandlers(io, socket);
   registerDisconnectHandler(io, socket);

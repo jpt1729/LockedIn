@@ -26,6 +26,11 @@ export async function getCachedRoom(roomIp) {
   
   return room;
 }
+
+export async function invalidateRoomCache(roomIp) {
+  await redis.del(roomCacheKey(roomIp));
+}
+
 function userClientCacheKey(roomId, userId) {
   return `room:${roomId}${userId}`;
 }
@@ -63,6 +68,49 @@ export async function getCachedUserClient(room, user) {
   
   return client;
 }
-export async function invalidateRoomCache(roomIp) {
-  await redis.del(roomCacheKey(roomIp));
+export async function invalidateUserClientCache(roomId, userId) {
+  await redis.del(userClientCacheKey(roomId, userId));
+}
+
+export async function updateUserClientDetails(roomId, userId, newData) {
+  // 1. Update the database
+  const updatedClient = await prisma.client.update({
+    where: { 
+      clientId: {
+        roomId: roomId,
+        userId: userId,
+      }
+    },
+    data: newData, 
+    include: {
+      room: true
+    }
+  });
+  console.log(updatedClient)
+  if (updatedClient) {
+    const key = userClientCacheKey(roomId, userId);
+    await redis.set(key, JSON.stringify(updatedClient), "EX", 600);
+
+    if (updatedClient.room.ip) {
+        await updateCachedRoomWithNewClientData(updatedClient.room.ip, updatedClient); // A new function you might write
+    }
+  }
+  return updatedClient;
+}
+
+// Hypothetical function to update room cache
+async function updateCachedRoomWithNewClientData(roomIp, updatedClientData) {
+    const roomKey = roomCacheKey(roomIp);
+    const cachedRoomJSON = await redis.get(roomKey);
+    if (cachedRoomJSON) {
+        const room = JSON.parse(cachedRoomJSON);
+        // Logic to update the 'clients' array within the cached 'room' object
+        const clientIndex = room.clients.findIndex(c => c.id === updatedClientData.id); // Assuming client has an 'id'
+        if (clientIndex !== -1) {
+            room.clients[clientIndex] = updatedClientData;
+        } else {
+            room.clients.push(updatedClientData); // Or add if it's a new client for the room
+        }
+        await redis.set(roomKey, JSON.stringify(room), "EX", 600);
+    }
 }
