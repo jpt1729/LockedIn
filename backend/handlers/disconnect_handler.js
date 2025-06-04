@@ -14,25 +14,24 @@ export function registerDisconnectHandler(io, socket) {
         socket.id
       } (User: ${userId}) disconnected: ${reason}`
     );
-    console.log(socket.roomId)
-    updateUserClientDetails(socket.roomId, userId, {active: false})
-    socket.rooms.forEach(async (roomId) => {
-      console.log(roomId);
-      if (roomId !== socket.id) {
-        const leaveInfo = {
-          socketId: socket.id,
-          userId: userId,
-          name: userName,
-        };
-        io.to(roomId).emit("user_left", { ...leaveInfo, roomId });
-        const room = await getCachedRoom(roomId);
-        await updateUserClientDetails(room.id, userId, { active: false });
-        
-
-        console.log(
-          `[${timestamp()}] Emitted user_left for ${userId} to room ${roomId}`
-        );
-      }
-    });
+    const roomId = socket.roomId;
+    const room = await getCachedRoom(socket.handshake.address);
+    try {
+      const updatedUserInfo = await updateUserClientDetails(roomId, userId, {
+        active: false,
+      });
+      socket.to(room.ip).emit("update-user", {
+        fromSocketId: socket.id,
+        content: updatedUserInfo,
+        roomId: roomId,
+      });
+      console.log(
+        `[${timestamp()}] Emitted update-user from ${
+          socket.user.id
+        } to room ${roomId}`
+      );
+    } catch (err) {
+      console.log(err);
+    }
   });
 }

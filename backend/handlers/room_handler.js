@@ -1,4 +1,4 @@
-import { timestamp } from "../utils/index.js"; 
+import { timestamp } from "../utils/index.js";
 import { getCachedRoom, getCachedUserClient } from "../utils/cache/index.js";
 
 export async function joinRoom(io, socket) {
@@ -9,20 +9,39 @@ export async function joinRoom(io, socket) {
       room.ip
     }`
   );
-  socket.emit("joined-room-details", { room });
+  socket.emit("joined-room-details", { ...room, clients: getRoomUsers(io, socket, room.ip) });
 
-  const userInfoForRoom = {
+  const client = await getCachedUserClient(room, {
     socketId: socket.id,
-    id: socket.user.id,
-    name: socket.user.name,
-    image: socket.user.image,
     ...socket.user,
-  };
-  const client = await getCachedUserClient(room, userInfoForRoom);
-  socket.roomId = room.id
+  });
+
+  console.log(getRoomUsers(io, socket, room.ip));
+  socket.roomId = room.id;
   // Emit to others in the room
-  socket
-    .to(room.ip)
-    .emit("user-joined", { roomId: room.id, user: client });
+  socket.to(room.ip).emit("user-joined", { roomId: room.id, user: client });
   console.log(`[${timestamp()}] Emitted user-joined to room ${room.id}`);
+}
+
+export function getRoomUsers(io, socket, roomIp) {
+  const room = io.sockets.adapter.rooms.get(roomIp);
+  const otherUsers = [];
+
+  if (room) {
+    for (const socketId of room) {
+      // Skip the current user's socket
+      if (socketId === socket.id) {
+        continue;
+      }
+
+      const otherSocket = io.sockets.sockets.get(socketId);
+      if (otherSocket && otherSocket.user) {
+        // Check if user data exists
+        otherUsers.push({
+          ...otherSocket.user,      
+        });
+      }
+    }
+  }
+  return otherUsers;
 }

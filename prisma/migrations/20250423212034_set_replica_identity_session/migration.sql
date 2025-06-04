@@ -1,2 +1,3 @@
 -- This is an empty migration.
 ALTER TABLE "Session" REPLICA IDENTITY FULL;
+ALTER TABLE "Client" REPLICA IDENTITY FULL;

@@ -13,7 +13,7 @@ export async function getCachedRoom(roomIp) {
 
   const room = await prisma.room.upsert({
     where: { ip: roomIp },
-    include: { clients: true },
+    include: { },
     update: {}, // no update if it already exists
     create: {
       ip: roomIp,
@@ -53,10 +53,12 @@ export async function getCachedUserClient(room, user) {
       userId: user.id,
       roomId: room.id,
 
+      socketId: user.socketId,
+
       name: user.name,
       image: user.image,
-      //email: user.email,
-
+      email: user.email,
+      
       active: true,
     },
   });
@@ -73,7 +75,7 @@ export async function invalidateUserClientCache(roomId, userId) {
 }
 
 export async function updateUserClientDetails(roomId, userId, newData) {
-  // 1. Update the database
+
   const updatedClient = await prisma.client.update({
     where: { 
       clientId: {
@@ -86,7 +88,7 @@ export async function updateUserClientDetails(roomId, userId, newData) {
       room: true
     }
   });
-  console.log(updatedClient)
+
   if (updatedClient) {
     const key = userClientCacheKey(roomId, userId);
     await redis.set(key, JSON.stringify(updatedClient), "EX", 600);
