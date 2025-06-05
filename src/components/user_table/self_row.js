@@ -1,15 +1,19 @@
+"use client";
+import { useState } from "react";
 import StyledLink from "../styled_components/link";
 
-function NameChip({ name, linkedin_profile }) {
+function NameChip({ name, linkedin_profile, onChange }) {
+    // update styled links
   return (
     <div className="flex justify-center">
       <StyledLink href={linkedin_profile} className={"flex gap-1"}>
         <div className="w-6 h-6 bg-amber-700 rounded-full" />
-        <span>{name && name}</span>
+        <input type="text" value={name && name} onChange={onChange} />
       </StyledLink>
     </div>
   );
 }
+
 const formatDate = (d) =>
   `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()} @ ${
     ((d.getHours() + 11) % 12) + 1
@@ -17,7 +21,17 @@ const formatDate = (d) =>
     d.getHours() >= 12 ? "pm" : "am"
   }`;
 
-export function UserRow({ name, role, email, active, time_connected }) {
+export function SelfRow({}) {
+  const [user, setUser] = useState({
+    name: "",
+    role: "",
+    email: "",
+    active: true,
+    time_connected: new Date(),
+  });
+
+  const { name, role, email, active, time_connected } = user;
+
   return (
     <tr className="gap-4">
       <td>
@@ -44,7 +58,14 @@ export function UserRow({ name, role, email, active, time_connected }) {
       </td>
       <td>
         <div className="flex justify-center">
-          <NameChip name={name} linkedin_profile={""} />
+          <NameChip
+            name={name}
+            linkedin_profile={""}
+            onChange={(e) => {
+              console.log(e);
+              setUser({...user, name: e.target.value})
+            }}
+          />
         </div>
       </td>
       <td>

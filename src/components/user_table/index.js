@@ -1,10 +1,12 @@
 "use client";
 import { useUserTable } from "./user_table_provider";
+import { useSession } from "next-auth/react";
 import { UserRow } from "./user_row";
+import { SelfRow } from "./self_row";
 
 export default function UserTable({}) {
-  const { userTableData, addUser } = useUserTable();
-
+  const { userTableData, updateUser } = useUserTable();
+  const { data: session, status } = useSession();
   return (
     <>
       <table className="w-full">
@@ -21,12 +23,23 @@ export default function UserTable({}) {
           </tr>
         </thead>
         <tbody>
+          <SelfRow/>
           {userTableData &&
             userTableData.map((data) => {
               return <UserRow key={data.id} {...data} />;
             })}
         </tbody>
       </table>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          updateUser({ role: e.target.elements.role.value });
+          console.log(e.target.elements.role.value);
+        }}
+      >
+        <input name="role" type="text" />
+        <input type="submit" />
+      </form>
     </>
   );
 }

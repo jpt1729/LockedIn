@@ -11,15 +11,9 @@ export async function joinRoom(io, socket) {
   );
   socket.emit("joined-room-details", { ...room, clients: getRoomUsers(io, socket, room.ip) });
 
-  const client = await getCachedUserClient(room, {
-    socketId: socket.id,
-    ...socket.user,
-  });
-
-  console.log(getRoomUsers(io, socket, room.ip));
   socket.roomId = room.id;
   // Emit to others in the room
-  socket.to(room.ip).emit("user-joined", { roomId: room.id, user: client });
+  socket.to(room.ip).emit("user-joined", { roomId: room.id, user: socket.appClient });
   console.log(`[${timestamp()}] Emitted user-joined to room ${room.id}`);
 }
 
@@ -35,10 +29,10 @@ export function getRoomUsers(io, socket, roomIp) {
       }
 
       const otherSocket = io.sockets.sockets.get(socketId);
-      if (otherSocket && otherSocket.user) {
+      if (otherSocket && otherSocket.appClient) {
         // Check if user data exists
         otherUsers.push({
-          ...otherSocket.user,      
+          ...otherSocket.appClient,      
         });
       }
     }

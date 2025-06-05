@@ -28,6 +28,15 @@ export function authenticateSocket(socket, next) {
     socket.user = {
       id: decoded.sub || decoded.id,
       name: decoded.name,
+      email: decoded.email,
+      image: decoded.image,
+      ...decoded
+      // Add other fields as needed from your JWT payload
+    };
+
+    socket.appClient = {
+      id: decoded.sub || decoded.id,
+      name: decoded.name,
       role: "",
       email: decoded.email,
       image: decoded.image,

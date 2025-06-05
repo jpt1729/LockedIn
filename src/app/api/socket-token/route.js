@@ -28,7 +28,7 @@ export const GET = auth(async function GET(req) {
 
   try {
     // Sign the token with the SAME AUTH_SECRET your Socket.IO server uses
-    const socketToken = jwt.sign(socketTokenPayload, JWT_SECRET, { expiresIn: '15m' }); // Short-lived
+    const socketToken = jwt.sign(socketTokenPayload, JWT_SECRET, { expiresIn: '60m' }); // Short-lived
     return NextResponse.json({ socketToken });
   } catch (error) {
     console.error("Error signing socket token:", error);

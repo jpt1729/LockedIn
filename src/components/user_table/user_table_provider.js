@@ -24,7 +24,6 @@ export function UserTableProvider({ children }) {
       return;
     }
     
-
     setUserTableData((prevUserTableData) => {
       const duplicate = prevUserTableData.findIndex((user) => user.id === id);
       if (duplicate !== -1) {
@@ -34,7 +33,7 @@ export function UserTableProvider({ children }) {
           id: id,
           role: newUser.role || "",
           email: newUser.email || "",
-          active: true,
+          active: newUser.active || true,
           time_connected: new Date(),
         };
         return prevUserTableData;
@@ -48,7 +47,7 @@ export function UserTableProvider({ children }) {
           id: id,
           role: newUser.role || "",
           email: newUser.email || "",
-          active: newUser.active,
+          active: newUser.active || true,
           time_connected: new Date(),
         },
       ];
@@ -89,7 +88,7 @@ export function UserTableProvider({ children }) {
 
     const handleUpdateUser = (data) => {
       console.log("Socket event: update-user", data);
-      addUser(data.content)
+      addUser(data.update)
     };
 
     socket.on("message", handleMessage);
@@ -130,10 +129,19 @@ export function UserTableProvider({ children }) {
     },
     [socket, connected]
   );
-
+  const updateUser = useCallback(
+    (update) => {
+      if (!connected || !socket) {
+        console.warn("Socket not connected, cannot send message.");
+        return;
+      }
+      socket.emit("update-user", { update });
+    },
+    [socket, connected]
+  );
   return (
     <UserTableContext.Provider
-      value={{ addUser, sendMessage, userTableData, connected }}
+      value={{ addUser, updateUser, sendMessage, updateUser, userTableData, connected }}
     >
       {children}
     </UserTableContext.Provider>
