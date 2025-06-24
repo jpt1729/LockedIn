@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"next dev\" \"nodemon backend/index.js\"",
-    "frontend-dev": "next dev",
+    "frontend": "next dev",
     "build": "GIT_HASH=$(git rev-parse HEAD); export GIT_HASH; prisma generate && next build",
     "backend": "nodemon --watch backend backend/index.js",
     "start": "next start",
@@ -19,6 +19,7 @@
     "dotenv": "^16.5.0",
     "ioredis": "^5.6.1",
     "jsonwebtoken": "^9.0.2",
+    "motion": "^12.18.1",
     "nanoid": "^5.1.5",
     "next": "15.3.0",
     "next-auth": "^5.0.0-beta.25",
